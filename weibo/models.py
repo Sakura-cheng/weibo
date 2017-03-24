@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: wsljc
 # @Date:   2017-03-14 16:35:16
-# @Last Modified by:   Sakura-cheng
-# @Last Modified time: 2017-03-23 21:26:57
+# @Last Modified by:   wsljc
+# @Last Modified time: 2017-03-24 15:40:00
 from . import db
 from flask_login import UserMixin
 from . import login_manager
@@ -31,7 +31,7 @@ class User(UserMixin, db.Model):
 			f = Follow(follower=self, followed=user)
 
 	def unfollow(self, user):
-		f = self.followed.filter_by(followed_id=user.id).first()
+		f = self.followeds.filter_by(followed_id=user.id).first()
 		if f:
 			db.session.delete(f)
 
@@ -56,6 +56,7 @@ class Article(db.Model):
 	__tablename__ = 'articles'
 	id = db.Column(db.Integer, primary_key=True)
 	content = db.Column(db.String(140), nullable=False)
+	timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	comments = db.relationship('Comment', backref='article')
 

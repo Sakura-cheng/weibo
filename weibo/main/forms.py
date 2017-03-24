@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 # @Author: wsljc
 # @Date:   2017-03-14 16:38:15
-# @Last Modified by:   Sakura-cheng
-# @Last Modified time: 2017-03-23 21:19:38
+# @Last Modified by:   wsljc
+# @Last Modified time: 2017-03-24 11:52:08
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import Required, Length, Email, EqualTo, Regexp
 from wtforms import ValidationError
 from ..models import User, Comment, Article, Follow
 
-class NameForm(Form):
-	name = StringField('你的名字：', validators=[Required()])
-	submit = SubmitField('提交')
+class PublishForm(Form):
+	content = TextAreaField('说点什么吧：', validators=[Required(), Length(max=140, message=('微博内容不能超过140字'))])
+	submit = SubmitField('发表')
 
 class LoginForm(Form):
 	username = StringField('用户名：', validators=[Required()])

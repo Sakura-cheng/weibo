@@ -5,30 +5,65 @@
 
 {% block page_content %}
 	<div class="container">
-		<br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-    	    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    	    {{ message }}
-        </div>
-        {% endfor%}
         <div class="col-md-2"></div>
         <div class="col-md-8">
         	<div class="page-header">
 		        <h1>微博</h1>
-		        <p>本地时间：{{ moment(current_time).format('LLL') }}</p>
+		        <p>本地时间：{{ moment(current_time).format('YYYY年MM月DD日') }}</p>
 		        <P>{{ moment(current_time).fromNow(refresh=True) }}</P>
-		        {{ wtf.quick_form(form) }}
-	    </div>
+                {% if current_user.is_authenticated %}
+		            <!--{{ wtf.quick_form(form) }}-->
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        {{ form.content.label }}{{ form.content(id='content', class='form-control', placeholder='请输入140字以内内容', required='required', autocomplete='off') }}
+                        <br>
+                        {{ form.submit(class='btn btn-primary') }}
+                    </form>
+                {% endif %}
+	        </div>
+            {% if current_user.is_authenticated %}
+	        {% for article in articles %}
+	        <div class="list-group">
+	        	<div class="list-group-item">
+                    <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
+                        {% if current_user.is_authenticated %}
+                            {% if current_user != article.user %}
+                                {% if current_user.is_following(article.user) %}
+                                    <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
+                                {% else %}
+                                    <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
+                        {% endif %}
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
+                    <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
+	        	</div>
+	        </div>
+	        {% endfor %}
+            {% else %}
+            {% for article in articles %}
+            <div class="list-group">
+                <div class="list-group-item">
+                    <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
+                        {% if current_user.is_authenticated %}
+                            {% if current_user != article.user %}
+                                {% if current_user.is_following(article.user) %}
+                                    <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
+                                {% else %}
+                                    <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
+                        {% endif %}
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
+                    <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
         </div>    
 	</div>
 {% endblock %}

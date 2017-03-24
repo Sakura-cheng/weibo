@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}微博{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}
+
+	{% block page_content %}
+	<div class="container">
+	<div class="col-md-2"></div>
+	<div class="col-md-8">
+	<div>
+		<h1>{{ user.username }}</h1>
+		<div>
+			粉丝：<span class="badge">{{ user.followers.count() }}</span>
+			关注：<span class="badge">{{ user.followeds.count() }}</span>
+			微博：<span class="badge">{{ total }}</span>
+			<div>
+				<br>
+			</div>
+		</div>
+		<ul class="nav nav-tabs">
+            <li role="presentation" class="active"><a href="#articles" data-toggle="tab">微博</a></li>
+            <li role="presentation"><a href="#followers" data-toggle="tab">粉丝</a></li>
+            <li role="presentation"><a href="#followeds" data-toggle="tab">关注</a></li>
+        </ul>
+        <div class="tab-content">
+        	<div class="tab-pane fade in active" id="articles">
+				{% for article in articles %}
+				<div class="list-group">
+				    <div class="list-group-item">
+				        <p>{{ article.user.username }}：</p>
+			            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
+			            <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
+				    </div>
+				</div>
+				{% endfor %}
+        	</div>
+        	<div class="tab-pane fade" id="followers">
+				{% for follower in user.followers %}
+				<div class="list-group">
+				    <div class="list-group-item">
+				        <p><a href="/{{ follower.follower.username }}">{{ follower.follower.username }}</a></p>
+				    </div>
+				</div>
+				{% endfor %}        		
+        	</div>
+        	<div class="tab-pane fade" id="followeds">
+				{% for followed in user.followeds %}
+				<div class="list-group">
+				    <div class="list-group-item">
+				        <p><a href="/{{ followed.followed.username }}">{{ followed.followed.username }}</a></p>
+				    </div>
+				</div>
+				{% endfor %}
+        	</div>
+        </div>
+	</div>
+	</div>
+	</div>
+	{% endblock %}
+
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js"></script>
