@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:21:39
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-03-24 17:51:22
+# @Last Modified time: 2017-04-08 18:51:56
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash
 
@@ -29,7 +29,7 @@ def index():
 def login():
 	form = LoginForm()
 	if form.validate_on_submit():
-		user = User.query.filter_by(username=form.username.data).first()
+		user = User.query.filter_by(email=form.email.data).first()
 		if user is not None and user.verify_password(form.password.data):
 			login_user(user, form.remember_me.data)
 			return redirect(request.args.get('next') or url_for('main.index'))
@@ -41,6 +41,7 @@ def register():
 	form = RegisterForm()
 	if form.validate_on_submit():
 		user = User(
+			email=form.email.data, 
 			username=form.username.data, 
 			password=form.password.data
 			)

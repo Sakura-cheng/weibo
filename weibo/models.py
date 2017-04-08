@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-14 16:35:16
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-03-24 15:40:00
+# @Last Modified time: 2017-04-08 18:54:26
 from . import db
 from flask_login import UserMixin
 from . import login_manager
@@ -18,6 +18,7 @@ class Follow(db.Model):
 class User(UserMixin, db.Model):
 	__tablename__ = 'users'
 	id = db.Column(db.Integer, primary_key=True)
+	email = db.Column(db.String(64), unique=True, index=True)
 	username = db.Column(db.String(64), unique=True, index=True)
 	#password = db.Column(db.String(64), nullable=False)
 	password_hash = db.Column(db.String(128))
