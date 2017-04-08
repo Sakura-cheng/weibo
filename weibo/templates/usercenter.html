@@ -12,7 +12,19 @@
 	<div class="col-md-2"></div>
 	<div class="col-md-8">
 	<div>
-		<h1>{{ user.username }}</h1>
+		<h1>{{ user.username }}
+		{% if current_user.is_authenticated %}
+            {% if current_user != user %}
+                {% if current_user.is_following(user) %}
+                    <a href="/unfollow/{{ user.username }}"><button type="button" class="btn btn-primary">取关</button></a>
+                {% else %}
+                    <a href="/follow/{{ user.username }}"><button type="button" class="btn btn-primary">关注</button></a>
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <a href="/follow/{{ user.username }}"><button type="button" class="btn btn-primary">关注</button></a>
+        {% endif %}
+		</h1>
 		<div>
 			粉丝：<span class="badge">{{ user.followers.count() }}</span>
 			关注：<span class="badge">{{ user.followeds.count() }}</span>
@@ -42,7 +54,19 @@
 				{% for follower in user.followers %}
 				<div class="list-group">
 				    <div class="list-group-item">
-				        <p><a href="/{{ follower.follower.username }}">{{ follower.follower.username }}</a></p>
+				        <p><a href="/{{ follower.follower.username }}">{{ follower.follower.username }}</a>
+				        {% if current_user.is_authenticated %}
+				            {% if current_user != follower.follower %}
+				                {% if current_user.is_following(follower.follower) %}
+				                    <a href="/unfollow/{{ follower.follower.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a>
+				                {% else %}
+				                    <a href="/follow/{{ follower.follower.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a>
+				                {% endif %}
+				            {% endif %}
+				        {% else %}
+				            <a href="/follow/{{ follower.follower.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a>
+				        {% endif %}
+				        </p>
 				    </div>
 				</div>
 				{% endfor %}        		
@@ -51,7 +75,19 @@
 				{% for followed in user.followeds %}
 				<div class="list-group">
 				    <div class="list-group-item">
-				        <p><a href="/{{ followed.followed.username }}">{{ followed.followed.username }}</a></p>
+				        <p><a href="/{{ followed.followed.username }}">{{ followed.followed.username }}</a>
+				        {% if current_user.is_authenticated %}
+				            {% if current_user != followed.followed %}
+				                {% if current_user.is_following(followed.followed) %}
+				                    <a href="/unfollow/{{ followed.followed.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a>
+				                {% else %}
+				                    <a href="/follow/{{ followed.followed.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a>
+				                {% endif %}
+				            {% endif %}
+				        {% else %}
+				            <a href="/follow/{{ followed.followed.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a>
+				        {% endif %}
+				        </p>
 				    </div>
 				</div>
 				{% endfor %}
