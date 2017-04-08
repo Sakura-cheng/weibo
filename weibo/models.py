@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-14 16:35:16
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-08 18:54:26
+# @Last Modified time: 2017-04-08 19:52:21
 from . import db
 from flask_login import UserMixin
 from . import login_manager
@@ -65,6 +65,7 @@ class Comment(db.Model):
 	__tablename__ = 'comments'
 	id = db.Column(db.Integer, primary_key=True)
 	content = db.Column(db.String(200), nullable=False)
+	timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
 

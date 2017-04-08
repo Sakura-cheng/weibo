@@ -21,49 +21,82 @@
                     </form>
                 {% endif %}
 	        </div>
-            {% if current_user.is_authenticated %}
-	        {% for article in articles %}
-	        <div class="list-group">
-	        	<div class="list-group-item">
-                    <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
-                        {% if current_user.is_authenticated %}
-                            {% if current_user != article.user %}
-                                {% if current_user.is_following(article.user) %}
-                                    <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
+
+            <ul class="nav nav-tabs">
+                {% if current_user.is_authenticated %}
+                <li role="presentation" class="active"><a href="#followeds" data-toggle="tab">我的关注</a></li>
+                <li role="presentation"><a href="#articles" data-toggle="tab">全部动态</a></li>
+                {% else %}
+                <li role="presentation" class="active"><a href="#articles" data-toggle="tab">全部动态</a></li>
+                {% endif %}
+            </ul>
+            <div class="tab-content">
+                {% if current_user.is_authenticated %}
+                <div class="tab-pane fade" id="articles">
+                    {% for article in articles %}
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
+                                {% if current_user.is_authenticated %}
+                                    {% if current_user != article.user %}
+                                        {% if current_user.is_following(article.user) %}
+                                            <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
+                                        {% else %}
+                                            <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
+                                        {% endif %}
+                                    {% endif %}
                                 {% else %}
                                     <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
                                 {% endif %}
-                            {% endif %}
-                        {% else %}
-                            <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
-                        {% endif %}
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
-                    <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
-	        	</div>
-	        </div>
-	        {% endfor %}
-            {% else %}
-            {% for article in articles %}
-            <div class="list-group">
-                <div class="list-group-item">
-                    <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
-                        {% if current_user.is_authenticated %}
-                            {% if current_user != article.user %}
-                                {% if current_user.is_following(article.user) %}
-                                    <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
-                                {% else %}
-                                    <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
-                                {% endif %}
-                            {% endif %}
-                        {% else %}
-                            <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
-                        {% endif %}
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
-                    <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
+                            <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
+                
+                <div class="tab-pane fade in active" id="followeds">
+                    {% for article in articles %}
+                    <div class="list-group">
+                        {% if current_user.is_following(article.user) %}
+                        <div class="list-group-item">
+                            <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
+                            <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
+                            <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="tab-pane fade in active" id="articles">
+                    {% for article in articles %}
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
+                                {% if current_user.is_authenticated %}
+                                    {% if current_user != article.user %}
+                                        {% if current_user.is_following(article.user) %}
+                                            <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
+                                        {% else %}
+                                            <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
+                                {% endif %}
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
+                            <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
-            {% endfor %}
-            {% endif %}
+
+
+            
         </div>  
         <div class="col-md-2">
             <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix">   
