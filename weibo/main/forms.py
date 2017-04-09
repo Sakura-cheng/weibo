@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-14 16:38:15
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-08 18:27:29
+# @Last Modified time: 2017-04-09 10:33:46
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import Required, Length, Email, EqualTo, Regexp
