@@ -2,9 +2,9 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:21:39
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-09 11:40:24
+# @Last Modified time: 2017-04-09 23:59:08
 from datetime import datetime
-from flask import render_template, session, redirect, url_for, request, flash
+from flask import render_template, session, redirect, url_for, request, flash, jsonify
 
 from . import main
 from .forms import PublishForm, LoginForm, RegisterForm
@@ -53,11 +53,12 @@ def register():
 
 @main.route('/<username>', methods=['GET', 'POST'])
 @login_required
-def usercenter(username):
+def usercenter(username, x=0):
+	x = request.args.get('x', 0)
 	user = User.query.filter_by(username=username).first()
 	articles = Article.query.filter_by(user_id=user.id).order_by(Article.timestamp.desc()).all()
 	total = Article.query.filter_by(user_id=user.id).count()
-	return render_template('usercenter.html', articles=articles, total=total, user=user)
+	return render_template('usercenter.html', articles=articles, total=total, user=user, func = x)
 
 @main.route('/follow/<username>')
 @login_required
@@ -66,12 +67,12 @@ def follow_from_index(username):
 	if user is None:
 		flash('用户不存在')
 		return redirect(url_for('.index'))
-	if current_user.is_following(user):
-		flash('你已经关注Ta了')
-		return redirect(url_for('.index'))
+	#if current_user.is_following(user):
+	#	flash('你已经关注Ta了')
+	#	return redirect(url_for('.index'))
 	current_user.follow(user)
 	flash('你现在已关注Ta了')
-	return redirect(url_for('.index'))
+	return jsonify(result='取关')
 
 @main.route('/unfollow/<username>')
 @login_required
@@ -82,7 +83,18 @@ def unfollow_from_index(username):
 		return redirect(url_for('.index'))
 	current_user.unfollow(user)
 	flash('你现在已取关Ta了')
-	return redirect(url_for('.index'))
+	return jsonify(result='关注')
+
+@main.route('/unfollow_/<username>', methods=['GET', 'POST'])
+@login_required
+def unfollow(username):
+	user = User.query.filter_by(username=username).first()
+	if user is None:
+		flash('用户不存在')
+		return redirect(url_for('.index'))
+	current_user.unfollow(user)
+	flash('你现在已取关Ta了')
+	return redirect(url_for('.usercenter', username=current_user._get_current_object().username, x=1))
 
 @main.route('/logout')
 @login_required

@@ -1,21 +1,36 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+<script type="text/javascript" src="../static/js/jquery.js"></script>
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+
+<script type="text/javascript">
+    $(function(){
+
+    });
+</script>
+{% endblock %}
+
 {% block title %}微博{% endblock %}
 
-{% block page_content %}
+{% block content %}
 	<div class="container">
         <div class="col-md-2"></div>
         <div class="col-md-8">
+
         	<div class="page-header">
 		        <h1>微博</h1>
 		        <p>本地时间：{{ moment(current_time).format('YYYY年MM月DD日') }}</p>
-		        <P>{{ moment(current_time).fromNow(refresh=True) }}</P>
                 {% if current_user.is_authenticated %}
 		            <!--{{ wtf.quick_form(form) }}-->
                     <form method="POST">
                         {{ form.hidden_tag() }}
-                        {{ form.content.label }}{{ form.content(id='content', class='form-control', placeholder='请输入140字以内内容', required='required', autocomplete='off') }}
+                        {{ form.content(id='content', class='form-control', row="10", placeholder='请输入140字以内内容', required='required', autocomplete='off') }}
                         <br>
                         {{ form.submit(class='btn btn-primary') }}
                     </form>
@@ -24,7 +39,7 @@
 
             <ul class="nav nav-tabs">
                 {% if current_user.is_authenticated %}
-                <li role="presentation" class="active"><a href="#followeds" data-toggle="tab">我的关注</a></li>
+                <li role="presentation" class="active"><a href="#followeds" data-toggle="tab">我的</a></li>
                 <li role="presentation"><a href="#articles" data-toggle="tab">全部动态</a></li>
                 {% else %}
                 <li role="presentation" class="active"><a href="#articles" data-toggle="tab">全部动态</a></li>
@@ -37,17 +52,7 @@
                     <div class="list-group">
                         <div class="list-group-item">
                             <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
-                                {% if current_user.is_authenticated %}
-                                    {% if current_user != article.user %}
-                                        {% if current_user.is_following(article.user) %}
-                                            <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
-                                        {% else %}
-                                            <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
-                                        {% endif %}
-                                    {% endif %}
-                                {% else %}
-                                    <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
-                                {% endif %}
+                                
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
                             <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
                         </div>
@@ -58,10 +63,10 @@
                 <div class="tab-pane fade in active" id="followeds">
                     {% for article in articles %}
                     <div class="list-group">
-                        {% if current_user.is_following(article.user) %}
+                        {% if current_user.is_following(article.user) or current_user == article.user %}
                         <div class="list-group-item">
                             <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
-                            <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
+                            
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
                             <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
                         </div>
@@ -75,17 +80,7 @@
                     <div class="list-group">
                         <div class="list-group-item">
                             <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
-                                {% if current_user.is_authenticated %}
-                                    {% if current_user != article.user %}
-                                        {% if current_user.is_following(article.user) %}
-                                            <a href="/unfollow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">取关</button></a></p>
-                                        {% else %}
-                                            <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
-                                        {% endif %}
-                                    {% endif %}
-                                {% else %}
-                                    <a href="/follow/{{ article.user.username }}" style="float: right;"><button type="button" class="btn btn-primary">关注</button></a></p>
-                                {% endif %}
+                                
                             <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
                             <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
                         </div>
@@ -94,9 +89,6 @@
                 </div>
                 {% endif %}
             </div>
-
-
-            
         </div>  
         <div class="col-md-2">
             <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix">   
