@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-14 16:35:16
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-08 19:52:21
+# @Last Modified time: 2017-04-16 19:42:49
 from . import db
 from flask_login import UserMixin
 from . import login_manager
@@ -22,6 +22,8 @@ class User(UserMixin, db.Model):
 	username = db.Column(db.String(64), unique=True, index=True)
 	#password = db.Column(db.String(64), nullable=False)
 	password_hash = db.Column(db.String(128))
+	image = db.Column(db.String(64), default='username')
+	content = db.Column(db.String(200), default='这个人很懒，什么也没说')
 	articles = db.relationship('Article', backref='user')
 	comments = db.relationship('Comment', backref='user')
 	followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], backref=db.backref('followed', lazy='joined'), lazy='dynamic', cascade='all, delete-orphan')
@@ -60,6 +62,7 @@ class Article(db.Model):
 	timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	comments = db.relationship('Comment', backref='article')
+	comments_number = db.Column(db.Integer, default=0)
 
 class Comment(db.Model):
 	__tablename__ = 'comments'

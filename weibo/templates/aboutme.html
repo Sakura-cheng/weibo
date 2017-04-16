@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--========== The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags ==========-->
+    <title>About</title>
+
+    <!--==========Dependency============-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/vendors/owl-carousel/assets/owl.carousel.css">
+    <link rel="stylesheet" href="../static/vendors/magnific-popup/magnific-popup.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit:500">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:600,700italic">
+    <link href='https://fonts.googleapis.com/css?family=Dosis:400,200,300,500,600,800,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:400,300,300italic,400italic">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500italic,500,700italic,700,900,900italic'
+        rel='stylesheet' type='text/css'>
+
+    <!-- login-register -->
+    <link href="../static/bootstrap3/css/bootstrap.css" rel="stylesheet" />
+
+    <link href="../static/css/login-register.css" rel="stylesheet" />
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+
+    <script src="../static/jquery/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="../static/bootstrap3/js/bootstrap.js" type="text/javascript"></script>
+    <script src="../static/js/login-register.js" type="text/javascript"></script>    
+
+    <!--==========Theme Styles==========-->
+    <link href="../static/css/style.css" rel="stylesheet">
+    <link href="../static/css/theme/green.css" rel="stylesheet">
+
+    <!--========== HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries ==========-->
+    <!--========== WARNING: Respond.js doesn't work if you view the page via file:// ==========-->
+    <!--==========[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+<![endif]==========-->
+</head>
+
+<body class="home">
+
+    <header class="row transparent white" data-spy="affix" data-offset-top="0" id="header">
+        <div class="container">
+            <div class="row top-header">
+                <div class="col-sm-4 search-form-col">
+                    <form action="#" method="get" class="search-form">
+                        <div class="input-group">
+                            <span class="input-group-addon"><img src="../static/images/search-icon-dark.png" alt=""></span>
+                            <input type="search" class="form-control" placeholder="search">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-4 logo-col text-center">
+                    <a href="/"><img src="../static/images/logo-black-green.png" alt=""></a>
+                </div>
+                <div class="col-sm-4 menu-trigger-col text-right">
+                    {% if current_user.is_authenticated %}
+                    <a href="/{{ current_user.username }}"><img src="../static/images/touxiang/{{ current_user.username }}.jpg" class="img-circle" width="35" height="35"></a>
+                    <span>&nbsp;</span>
+                    {% endif %}
+                    <button class="menu-trigger black pull-right">
+                    {% if current_user.is_authenticated %}
+                    <span class="active-page">more</span>
+                    {% else %}
+                    <span class="active-page">登录/注册</span>
+                    {% endif %}
+                    <img src="../static/images/menu-align-dark.png" alt="" class="icon-burger">
+                    <img src="../static/images/menu-close-dark.png" alt="" class="icon-cross">
+                </button>
+                </div>
+            </div>
+        </div>
+        <div class="row menu-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 menu-col">
+                        <ul class="nav column-menu white-bg">
+                            <li><a href="/">Home</a></li>
+                            {% if current_user.is_authenticated %}
+                            <li><a href="/about/{{ current_user.username }}">About</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 subscribe-col">
+                        <div style="float:right;">
+                            {% if current_user.is_authenticated %}
+                            <a href="/logout"><button type="submit" class="btn btn-primary btn-sm"><span>Out</span></button></a>
+                            {% else %}
+                            <form action="#" method="post" class="form-inline subscribe-form">
+                                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" href="javascript:void(0)" onclick="openRegisterModal();"><span>注册</span></button>
+                                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" href="javascript:void(0)" onclick="openLoginModal();"><span>登陆</span></button>
+                            </form>
+                            {% endif %}
+                            <!-- <form action="#" method="post" class="form-inline subscribe-form">
+                                <button type="submit" class="btn btn-primary btn-sm"><span>Jacky</span></button>
+                                <a href="/logout"><button type="submit" class="btn btn-primary btn-sm"><span>Out</span></button></a>
+                            </form> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="modal fade login" id="loginModal">
+        <div class="modal-dialog login animated">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Login</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="box">
+                        <div class="content">
+                            <div class="error"></div>
+                            <div class="form loginBox">
+                                <form method="post" action="/login" accept-charset="UTF-8">
+                                    {{ loginform.hidden_tag() }}
+                                    {{ loginform.email(id='email', class='form-control', placeholder='请输入您的邮箱', required='required') }}
+                                    {{ loginform.password(id='password', class='form-control', placeholder='请输入密码', required='required') }}
+                                    {{ loginform.submit(class='btn btn-default btn-login') }}
+                                    <!-- <input id="email" class="form-control" type="text" placeholder="邮箱" name="email">
+                                    <input id="password" class="form-control" type="password" placeholder="密码" name="password">
+                                    <input class="btn btn-default btn-login" type="button" value="登录" onclick="loginAjax()"> -->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="content registerBox" style="display:none;">
+                            <div class="form">
+                                <form method="post" html="{:multipart=>true}" data-remote="true" action="/register" accept-charset="UTF-8">
+                                    {{ registerform.hidden_tag() }}
+                                    {{ registerform.username(id='username', class='form-control', placeholder='取个名字吧', required='required') }}
+                                    {{ registerform.email(id='email', class='form-control', placeholder='请输入你的邮箱', required='required') }}
+                                    {{ registerform.password(id='password', class='form-control', placeholder='请设置密码', required='required') }}
+                                    {{ registerform.password2(id='username', class='form-control', placeholder='请确认密码', required='required') }}
+                                    {{ registerform.submit(class='btn btn-default btn-register') }}
+                                    <!-- <input id="username" class="form-control" type="text" placeholder="用户名" name="username">
+                                    <input id="email" class="form-control" type="text" placeholder="邮箱" name="email">
+                                    <input id="password" class="form-control" type="password" placeholder="密码" name="password">
+                                    <input id="password_confirmation" class="form-control" type="password" placeholder="再次输入密码" name="password_confirmation">
+                                    <input class="btn btn-default btn-register" type="submit" value="注册" name="commit"> -->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="forgot login-footer">
+                        <span>Looking to 
+                                 <a href="javascript: showRegisterForm();">create an account</a>
+                            ?</span>
+                    </div>
+                    <div class="forgot register-footer" style="display:none">
+                        <span>Already have an account?</span>
+                        <a href="javascript: showLoginForm();">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="row page-content-wrap">
+        <div class="container">
+            <h2 class="page-title text-center">about me</h2>
+            <div class="row">
+                <div class="col-md-8 page-contents">
+                    <div class="row page-content">
+                        <div class="contents row">
+                            <form action="#" method="post" class="comment-form row" id="comment-form">
+                                <h5 class="form-title">个人简介</h5>
+                                <div class="form-group col-sm-6">
+                                    <label for="name">昵称*</label>
+                                    <input type="text" id="name" class="form-control" placeholder="Your name" required>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="email">邮箱*</label>
+                                    <input type="email" id="email" class="form-control" placeholder="Your email address here" required>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <label for="message">个性签名</label>
+                                    <textarea name="message" id="message" class="form-control" placeholder="Write message here"></textarea>
+                                </div>
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn-primary"><span>保存</span></button>
+                                    <h5 class="pull-right">*必须填写</h5>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 sidebar">
+                    <!--头像-->
+                    <aside class="row m0 widget widget-twitter">
+                        <img src="../static/images/{{ current_user.username }}.jpg" alt="" class="img-responsive" width="360" height="360">
+                    </aside>
+                    <aside class="row m0 widget widget-twitter">
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn-primary"><span>修改头像</span></button>
+                        </div>
+                    </aside>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!--Footer-->
+    <footer class="row" id="footer">
+        <div class="container">
+            <div class="row top-footer">
+                <div class="widget col-sm-3 widget-about">
+                    <div class="row m0">
+                        <a href="/"><img src="../static/images/logo-black-green.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="widget col-sm-5 widget-menu">
+                    <div class="row">
+                        <ul class="nav column-menu white-bg">
+                            <li><a>Designed by: Chen Yang & jin chen & junchen li</a></li>
+                            <li><a>Powered by: Python</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="widget col-sm-4 widget-subscribe">
+                    <h5 class="widget-title">subscribe to our newsletter.</h5>
+                    <form action="#" method="post" class="form-inline subscribe-form">
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Email">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm"><span>send</span></button>
+                    </form>
+                </div>
+            </div>
+            <h5 class="copyright">Copyright &copy; 2017.Company name All rights reserved.<a target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></h5>
+        </div>
+    </footer>
+
+    <!--========== jQuery (necessary for Bootstrap's JavaScript plugins) ==========-->
+    <script src="../static/js/jquery-2.2.0.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/vendors/owl-carousel/owl.carousel.min.js"></script>
+    <script src="../static/vendors/magnific-popup/jquery.magnific-popup.min.js"></script>
+    <script src="../static/vendors/instafeed/instafeed.min.js"></script>
+    <script src="../static/vendors/imagesLoaded/imagesloaded.pkgd.min.js"></script>
+    <script src="../static/vendors/isotope/isotope.pkgd.min.js"></script>
+    <script src="../static/js/theme.js"></script>
+    {{ moment.include_moment() }}
+</body>
+
+</html>

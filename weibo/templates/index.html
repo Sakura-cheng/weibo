@@ -1,101 +1,333 @@
-{% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block scripts %}
-{{ super() }}
-{{ moment.include_moment() }}
-<script type="text/javascript" src="../static/js/jquery.js"></script>
-<script type=text/javascript>
-  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-</script>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--========== The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags ==========-->
+    <title>微博</title>
 
-<script type="text/javascript">
-    $(function(){
+    <!--==========Dependency============-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/vendors/owl-carousel/assets/owl.carousel.css">
+    <link rel="stylesheet" href="../static/vendors/magnific-popup/magnific-popup.css">
 
-    });
-</script>
-{% endblock %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit:500">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:600,700italic">
+    <link href='https://fonts.googleapis.com/css?family=Dosis:400,200,300,500,600,800,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:400,300,300italic,400italic">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500italic,500,700italic,700,900,900italic'
+        rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Fredoka+One' rel='stylesheet' type='text/css'>
 
-{% block title %}微博{% endblock %}
+    <link href="../static/bootstrap3/css/bootstrap.css" rel="stylesheet" />
 
-{% block content %}
-	<div class="container">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
+    <link href="../static/css/login-register.css" rel="stylesheet" />
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 
-        	<div class="page-header">
-		        <h1>微博</h1>
-		        <p>本地时间：{{ moment(current_time).format('YYYY年MM月DD日') }}</p>
-                {% if current_user.is_authenticated %}
-		            <!--{{ wtf.quick_form(form) }}-->
-                    <form method="POST">
-                        {{ form.hidden_tag() }}
-                        {{ form.content(id='content', class='form-control', row="10", placeholder='请输入140字以内内容', required='required', autocomplete='off') }}
-                        <br>
-                        {{ form.submit(class='btn btn-primary') }}
+    <script src="../static/jquery/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="../static/bootstrap3/js/bootstrap.js" type="text/javascript"></script>
+    <script src="../static/js/login-register.js" type="text/javascript"></script>
+
+    <!--==========Theme Styles==========-->
+    <link href="../static/css/style.css" rel="stylesheet">
+    <link href="../static/css/theme/green.css" rel="stylesheet">
+
+    <!--========== HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries ==========-->
+    <!--========== WARNING: Respond.js doesn't work if you view the page via file:// ==========-->
+    <!--==========[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+<![endif]==========-->
+</head>
+
+<body class="home">
+
+    <header class="row transparent black header1" data-spy="affix" data-offset-top="0" id="header">
+        <div class="container">
+            <div class="row top-header">
+                <div class="col-sm-4 search-form-col">
+                    <form action="#" method="get" class="search-form">
+                        <div class="input-group">
+                            <span class="input-group-addon"><img src="../static/images/search-icon-white.png" alt=""></span>
+                            <input type="search" class="form-control" placeholder="search">
+                        </div>
                     </form>
-                {% endif %}
-	        </div>
-
-            <ul class="nav nav-tabs">
-                {% if current_user.is_authenticated %}
-                <li role="presentation" class="active"><a href="#followeds" data-toggle="tab">我的</a></li>
-                <li role="presentation"><a href="#articles" data-toggle="tab">全部动态</a></li>
-                {% else %}
-                <li role="presentation" class="active"><a href="#articles" data-toggle="tab">全部动态</a></li>
-                {% endif %}
-            </ul>
-            <div class="tab-content">
-                {% if current_user.is_authenticated %}
-                <div class="tab-pane fade" id="articles">
-                    {% for article in articles %}
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
-                                
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
-                            <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
                 </div>
-                
-                <div class="tab-pane fade in active" id="followeds">
-                    {% for article in articles %}
-                    <div class="list-group">
-                        {% if current_user.is_following(article.user) or current_user == article.user %}
-                        <div class="list-group-item">
-                            <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
-                            
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
-                            <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
+                <div class="col-sm-4 logo-col text-center">
+                    <a href="/"><img src="../static/images/logo-white-green.png" alt=""></a>
                 </div>
-                {% else %}
-                <div class="tab-pane fade in active" id="articles">
-                    {% for article in articles %}
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <p><a href="/{{ article.user.username }}"><b>{{ article.user.username }}：</b></a>
-                                
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ article.content }}</p>
-                            <p class="text-right" style="color: gray">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
+                <div class="col-sm-4 menu-trigger-col text-right">
+                    {% if current_user.is_authenticated %}
+                    <a href="/{{ current_user.username }}"><img src="../static/images/touxiang/{{ current_user.username }}.jpg" class="img-circle" width="35" height="35"></a>
+                    <span>&nbsp;</span>
+                    {% endif %}
+                    <button class="menu-trigger pull-right">
+                    {% if current_user.is_authenticated %}
+                    <span class="active-page">more</span>
+                    {% else %}
+                    <span class="active-page">登录/注册</span>
+                    {% endif %}
+                    <img src="../static/images/menu-align-white.png" alt="" class="icon-burger">
+                    <img src="../static/images/menu-close-white.png" alt="" class="icon-cross">
+                </button>
                 </div>
-                {% endif %}
             </div>
-        </div>  
-        <div class="col-md-2">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix">   
-            <a class="back-to-top" href="#top" style="position: fixed; right: 250px; bottom: 20px;">
-              返回顶部
-            </a>
-          </nav>
-        </div>  
-	</div>
-{% endblock %}
+        </div>
+        <div class="row menu-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 menu-col">
+                        <ul class="nav column-menu white-bg">
+                            <li><a href="/">Home</a></li>
+                            {% if current_user.is_authenticated %}
+                            <li><a href="/about/{{ current_user.username }}">About</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 subscribe-col">
+                        <div style="float:right;">
+                            {% if current_user.is_authenticated %}
+                            <a href="/logout"><button type="submit" class="btn btn-primary btn-sm"><span>Out</span></button></a>
+                            {% else %}
+                            <form action="#" method="post" class="form-inline subscribe-form">
+                                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" href="javascript:void(0)" onclick="openRegisterModal();"><span>注册</span></button>
+                                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" href="javascript:void(0)" onclick="openLoginModal();"><span>登陆</span></button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="modal fade login" id="loginModal">
+        <div class="modal-dialog login animated">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Login</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="box">
+                        <div class="content">
+                            <div class="error"></div>
+                            <div class="form loginBox">
+                                <form method="post" action="/login" accept-charset="UTF-8">
+                                    {{ loginform.hidden_tag() }}
+                                    {{ loginform.email(id='email', class='form-control', placeholder='请输入您的邮箱', required='required') }}
+                                    {{ loginform.password(id='password', class='form-control', placeholder='请输入密码', required='required') }}
+                                    {{ loginform.submit(class='btn btn-default btn-login') }}
+                                    <!-- <input id="email" class="form-control" type="text" placeholder="邮箱" name="email">
+                                    <input id="password" class="form-control" type="password" placeholder="密码" name="password">
+                                    <input class="btn btn-default btn-login" type="button" value="登录" onclick="loginAjax()"> -->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="content registerBox" style="display:none;">
+                            <div class="form">
+                                <form method="post" html="{:multipart=>true}" data-remote="true" action="/register" accept-charset="UTF-8">
+                                    {{ registerform.hidden_tag() }}
+                                    {{ registerform.username(id='username', class='form-control', placeholder='取个名字吧', required='required') }}
+                                    {{ registerform.email(id='email', class='form-control', placeholder='请输入你的邮箱', required='required') }}
+                                    {{ registerform.password(id='password', class='form-control', placeholder='请设置密码', required='required') }}
+                                    {{ registerform.password2(id='username', class='form-control', placeholder='请确认密码', required='required') }}
+                                    {{ registerform.submit(class='btn btn-default btn-register') }}
+                                    <!-- <input id="username" class="form-control" type="text" placeholder="用户名" name="username">
+                                    <input id="email" class="form-control" type="text" placeholder="邮箱" name="email">
+                                    <input id="password" class="form-control" type="password" placeholder="密码" name="password">
+                                    <input id="password_confirmation" class="form-control" type="password" placeholder="再次输入密码" name="password_confirmation">
+                                    <input class="btn btn-default btn-register" type="submit" value="注册" name="commit"> -->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="forgot login-footer">
+                        <span>Looking to 
+                                 <a href="javascript: showRegisterForm();">create an account</a>
+                            ?</span>
+                    </div>
+                    <div class="forgot register-footer" style="display:none">
+                        <span>Already have an account?</span>
+                        <a href="javascript: showLoginForm();">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="row featured-post-carousel">
+        <div class="item post">
+            <img src="../static/images/featured-posts/a.jpg" alt="" class="img-responsive main-bg">
+            <div class="post-content">
+                <div class="container">
+                    <div style="float:right;">
+                        <h2 class="post-title"><a>Look at the beauty, Take down the beauty</a></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="row content-wrap">
+    <div class="container">
+        <div class="col-sm-1"></div>
+        <aside class="col-sm-10">
+            {% if current_user.is_authenticated %}
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                {{ form.content(id='content', class='form-control', style='border-style: solid; border-color: #5CDA86', placeholder='请输入140字以内内容', required='required', autocomplete='off') }}
+                <br>
+                {{ form.submit(type='submit', class='btn-primary', style='color: gray') }}
+            </form>
+            {% endif %}
+        </aside>
+    </div>
+    <div class="container">
+        <div class="row" id="post-masonry">
+            <!--Blog Post-->
+            {% for article in articles %}
+            <aside class="col-sm-4 widget-author widget widget-with-posts post">
+                <div class="widget-author-inner row">
+                    <div class="author-avatar1 row">
+                        <a href="/{{ article.user.username }}"><img src="../static/images/touxiang/{{ article.user.username }}.jpg" class="img-circle" width="100" height="100"></a>
+                    </div>
+                    <a href="/{{ article.user.username }}">
+                        <h2 class="author-name">{{ article.user.username }}</h2>
+                    </a>
+                    <h5 class="author-title">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</h5>
+                    <div><p style="text-align: center;"><span class="">{{ article.content }}</span></p></div>
+                    <footer class="row">
+                        <a href="/content/{{ article.id }}" class="know-more1">评论</a>
+                        <div class="response-count"><img src="../static/images/comment-icon-gray.png">{{ article.comments_number }}</div>
+                    </footer>
+                </div>
+            </aside>
+            {% endfor %}
+                <!-- <aside class="col-sm-4 widget-author widget widget-with-posts post">
+                    <div class="widget-author-inner row">
+                        <div class="author-avatar1 row">
+                            <a href="#">
+                                <img src="../static/images/author.png" alt="" class="img-circle"></a>
+                        </div>
+                        <a href="#">
+                            <h2 class="author-name">_@-@_傻逼智障爸爸</h2>
+                        </a>
+                        <h5 class="author-title">feb 17, 2016</h5>
+                        <p><span class="personal-font-p">哈哈哈哈哈！</span></p>
+                        <footer class="row">
+                            <a href="#" class="know-more1">know more</a>
+                            <div class="response-count"><img src="../static/images/comment-icon-gray.png" alt="">5</div>
+                        </footer>
+                    </div>
+                </aside>
+                <aside class="col-sm-4 widget-author widget widget-with-posts post">
+                    <div class="widget-author-inner row">
+                        <div class="author-avatar1 row">
+                            <a href="#">
+                                <img src="../static/images/posts/gallery/1.jpg" alt="" class="img-circle" width="108" height="108"></a>
+                        </div>
+                        <a href="#">
+                            <h2 class="author-name">張磊要</h2>
+                        </a>
+                        <h5 class="author-title">feb 17, 2016</h5>
+                        <p><span class="personal-font-p">The word nature is derived from the Latin word natura, or "essential qualities, innate disposition",
+                            and in ancient times, literally meant "birth".</span></p>
+                        <footer class="row">
+                            <a href="#" class="know-more1">know more</a>
+                            <div class="response-count"><img src="../static/images/comment-icon-gray.png" alt="">5</div>
+                        </footer>
+                    </div>
+                </aside>
+                <aside class="col-sm-4 widget-author widget widget-with-posts post">
+                    <div class="widget-author-inner row">
+                        <div class="author-avatar1 row">
+                            <a href="#">
+                                <img src="../static/images/posts/gallery/2.jpg" alt="" class="img-circle" width="108" height="108"></a>
+                        </div>
+                        <a href="#">
+                            <h2 class="author-name">_@-@_</h2>
+                        </a>
+                        <h5 class="author-title">feb 17, 2016</h5>
+                        <p><span class="personal-font-p">The word nature is derived from the Latin word natura, or "essential qualities, innate disposition",</span></p>
+                        <footer class="row">
+                            <a href="#" class="know-more1">know more</a>
+                            <div class="response-count"><img src="../static/images/comment-icon-gray.png" alt="">5</div>
+                        </footer>
+                    </div>
+                </aside>
+                <aside class="col-sm-4 widget-author widget widget-with-posts post">
+                    <div class="widget-author-inner row">
+                        <div class="author-avatar1 row">
+                            <a href="#">
+                                <img src="../static/images/posts/gallery/3.jpg" alt="" class="img-circle" width="108" height="108"></a>
+                        </div>
+                        <a href="#">
+                            <h2 class="author-name">_@-@_傻逼智障爸爸</h2>
+                        </a>
+                        <h5 class="author-title">feb 17, 2016</h5>
+                        <p><span class="personal-font-p">The word nature is derived from the Latin word natura, or "essential qualities, innate disposition",
+                            and in ancient times, literally meant "birth".</span></p>
+                        <footer class="row">
+                            <a href="#" class="know-more1">know more</a>
+                            <div class="response-count"><img src="../static/images/comment-icon-gray.png" alt="">5</div>
+                        </footer>
+                    </div>
+                </aside> -->
+
+            </div>
+        </div>
+    </section>
+
+    <!--Footer-->
+    <footer class="row" id="footer">
+        <div class="container">
+            <div class="row top-footer">
+                <div class="widget col-sm-3 widget-about">
+                    <div class="row m0">
+                        <a href="/"><img src="../static/images/logo-black-green.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="widget col-sm-5 widget-menu">
+                    <div class="row">
+                        <ul class="nav column-menu white-bg">
+                            <li><a>Designed by: Chen Yang & jin chen & junchen li</a></li>
+                            <li><a>Powered by: Python</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="widget col-sm-4 widget-subscribe">
+                    <h5 class="widget-title">subscribe to our newsletter.</h5>
+                    <form action="#" method="post" class="form-inline subscribe-form">
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Email">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm"><span>send</span></button>
+                    </form>
+                </div>
+            </div>
+            <h5 class="copyright">Copyright &copy; 2017.Company name All rights reserved.<a target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></h5>
+        </div>
+    </footer>
+
+    <!--========== jQuery (necessary for Bootstrap's JavaScript plugins) ==========-->
+    <script src="../static/js/jquery-2.2.0.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/vendors/owl-carousel/owl.carousel.min.js"></script>
+    <script src="../static/vendors/magnific-popup/jquery.magnific-popup.min.js"></script>
+    <script src="../static/vendors/instafeed/instafeed.min.js"></script>
+    <script src="../static/vendors/imagesLoaded/imagesloaded.pkgd.min.js"></script>
+    <script src="../static/vendors/isotope/isotope.pkgd.min.js"></script>
+    <script src="../static/vendors/flexslider/jquery.flexslider-min.js"></script>
+    <script src="../static/js/theme.js"></script>
+    {{ moment.include_moment() }}
+</body>
+
+</html>
