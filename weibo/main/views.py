@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:21:39
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-18 08:33:28
+# @Last Modified time: 2017-04-18 08:57:22
 import os
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash, jsonify, send_from_directory
@@ -146,9 +146,13 @@ def upload_file(username):
 	registerform = RegisterForm()
 	username = username
 	if request.method == 'POST' and 'file' in request.files:
-		filename = photos.save(request.files['file'], name=username + '.jpg')
-		db.session.execute("UPDATE users SET image = '%s' WHERE id = %d" % (filename, n))
-		return redirect(url_for('.about', username=username))
+		file = request.files['file']
+		if file:
+			filename = photos.save(file, name=username + '.jpg')
+			db.session.execute("UPDATE users SET image = '%s' WHERE id = %d" % (filename, n))
+			return redirect(url_for('.about', username=username))
+		else:
+			return redirect(url_for('.about', username=username))
 		# file = request.files['file']
 		# if file and allowed_file(file.filename):
 		# 	filename = username
