@@ -2,15 +2,23 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:21:39
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-16 18:41:53
+# @Last Modified time: 2017-04-18 08:33:28
+import os
 from datetime import datetime
-from flask import render_template, session, redirect, url_for, request, flash, jsonify
+from flask import render_template, session, redirect, url_for, request, flash, jsonify, send_from_directory
 
 from . import main
-from .forms import PublishForm, LoginForm, RegisterForm
-from .. import db
+from .forms import PublishForm, LoginForm, RegisterForm, CommentForm
+from .. import db, photos
 from ..models import User, Comment, Article, Follow
 from flask_login import login_required, login_user, logout_user, current_user
+from werkzeug import secure_filename
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+path = './weibo/static/images/touxiang'
+
+def allowed_file(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -68,10 +76,20 @@ def register():
 def content(article_id):
 	loginform = LoginForm()
 	registerform = RegisterForm()
+	commentform = CommentForm()
 	article = Article.query.filter_by(id=article_id).first()
+	n = article.id
+	if commentform.validate_on_submit():
+		comment = Comment(
+			content=commentform.content.data, 
+			user=current_user._get_current_object(), 
+			article_id=n
+			)
+		db.session.add(comment)
+		db.session.execute('UPDATE articles SET comments_number = comments_number + 1 WHERE id = %d' % n)
 	comments =Comment.query.filter_by(article_id=article_id)
 	total = Article.query.filter_by(user_id=article.user.id).count()
-	return render_template('content.html', article=article, total=total, comments=comments, loginform=loginform, registerform=registerform)
+	return render_template('content.html', article=article, total=total, comments=comments, loginform=loginform, registerform=registerform, commentform=commentform)
 
 @main.route('/about/<username>', methods=['GET', 'POST'])
 @login_required
@@ -91,7 +109,7 @@ def usercenter(username, x=0):
 	total = Article.query.filter_by(user_id=user.id).count()
 	return render_template('userpage.html', articles=articles, total=total, user=user, loginform=loginform, registerform=registerform, func = x)
 
-@main.route('/follow/<username>')
+@main.route('/follow/<username>', methods=['GET', 'POST'])
 @login_required
 def follow_from_index(username):
 	user = User.query.filter_by(username=username).first()
@@ -105,7 +123,7 @@ def follow_from_index(username):
 	flash('你现在已关注Ta了')
 	return jsonify(result='取关')
 
-@main.route('/unfollow/<username>')
+@main.route('/unfollow/<username>', methods=['GET', 'POST'])
 @login_required
 def unfollow_from_index(username):
 	user = User.query.filter_by(username=username).first()
@@ -115,6 +133,44 @@ def unfollow_from_index(username):
 	current_user.unfollow(user)
 	flash('你现在已取关Ta了')
 	return jsonify(result='关注')
+
+@main.route('/upload_file/<filename>')
+def uploaded_file(filename):
+	return send_from_directory(path, filename)
+
+@main.route('/upload/<username>', methods=['GET', 'POST'])
+def upload_file(username):
+	user = User.query.filter_by(username=username).first()
+	n = user.id
+	loginform = LoginForm()
+	registerform = RegisterForm()
+	username = username
+	if request.method == 'POST' and 'file' in request.files:
+		filename = photos.save(request.files['file'], name=username + '.jpg')
+		db.session.execute("UPDATE users SET image = '%s' WHERE id = %d" % (filename, n))
+		return redirect(url_for('.about', username=username))
+		# file = request.files['file']
+		# if file and allowed_file(file.filename):
+		# 	filename = username
+		# 	db.session.execute("UPDATE users SET image = '%s' WHERE id = %d" % (filename, n))
+		# 	filename = filename + '.jpg'
+		# 	file.save(os.path.join(path, filename))
+		# 	return redirect(url_for('.about', username=username))
+		# else:
+		# 	filename = None
+	else:
+		filename = None
+	return render_template('aboutme.html', loginform=loginform, registerform=registerform, filename=filename)
+	# if form.validate_on_submit():
+	# 	filename = photos.save(request.files['file'])
+	# 	filename = filename[:-4]
+	# 	db.session.execute("UPDATE users SET image = '%s' WHERE id = %d" % (filename, n))
+	# 	return redirect(url_for('.about', username=username))
+	# else:
+	# 	filename = None
+	# return render_template('aboutme.html', form=form, loginform=loginform, registerform=registerform, filename=filename)
+
+# ---------------------------------------------------------------------------
 
 @main.route('/unfollow_/<username>', methods=['GET', 'POST'])
 @login_required

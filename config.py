@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:23:02
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-03-14 16:34:07
+# @Last Modified time: 2017-04-18 08:12:02
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -13,6 +13,11 @@ class Config:
 	FLASKY_MAIL_SUBJECT_PREFIX = '[FLASKY]'
 	FLASKY_MAIL_SENDER = 'Flasky Admin <flasky@example.com>'
 	FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
+	
+	UPLOAD_FOLDER = './weibo/static/images/touxiang'
+	MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+
+	UPLOADED_PHOTOS_DEST = './weibo/static/images/touxiang'
 
 	@staticmethod
 	def init_app(app):

@@ -45,7 +45,7 @@
 
 <body class="home">
 
-    <header class="row transparent white" data-spy="affix" data-offset-top="0" id="header">
+    <header class="row transparent white header1" data-spy="affix" data-offset-top="0" id="header">
         <div class="container">
             <div class="row top-header">
                 <div class="col-sm-4 search-form-col">
@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-sm-4 menu-trigger-col text-right">
                     {% if current_user.is_authenticated %}
-                    <a href="/{{ current_user.username }}"><img src="../static/images/touxiang/{{ current_user.username }}.jpg" class="img-circle" width="35" height="35"></a>
+                    <a href="/{{ current_user.username }}"><img src="../static/images/touxiang/{{ current_user.image }}" class="img-circle" width="35" height="35"></a>
                     <span>&nbsp;</span>
                     {% endif %}
                     <button class="menu-trigger black pull-right">
@@ -198,11 +198,15 @@
                 <div class="col-md-4 sidebar">
                     <!--头像-->
                     <aside class="row m0 widget widget-twitter">
-                        <img src="../static/images/{{ current_user.username }}.jpg" alt="" class="img-responsive" width="360" height="360">
+                        <img src="../static/images/touxiang/{{ current_user.image }}" alt="" class="img-responsive" width="360" height="360">
                     </aside>
                     <aside class="row m0 widget widget-twitter">
                         <div class="col-sm-12">
-                            <button type="submit" class="btn-primary"><span>修改头像</span></button>
+                            <form method="POST" enctype="multipart/form-data" action="/upload/{{ current_user.username }}">
+                                <input type=file name=file>
+                                <input type=submit value=上传>
+                            </form>
+                            <!-- <button type="submit" class="btn-primary"><span>修改头像</span></button> -->
                         </div>
                     </aside>
 

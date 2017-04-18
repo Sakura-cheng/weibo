@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-14 16:35:16
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-16 19:42:49
+# @Last Modified time: 2017-04-18 08:42:46
 from . import db
 from flask_login import UserMixin
 from . import login_manager
@@ -22,7 +22,7 @@ class User(UserMixin, db.Model):
 	username = db.Column(db.String(64), unique=True, index=True)
 	#password = db.Column(db.String(64), nullable=False)
 	password_hash = db.Column(db.String(128))
-	image = db.Column(db.String(64), default='username')
+	image = db.Column(db.String(200), default='username.jpg')
 	content = db.Column(db.String(200), default='这个人很懒，什么也没说')
 	articles = db.relationship('Article', backref='user')
 	comments = db.relationship('Comment', backref='user')

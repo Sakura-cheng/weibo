@@ -62,7 +62,7 @@
                 </div>
                 <div class="col-sm-4 menu-trigger-col text-right">
                     {% if current_user.is_authenticated %}
-                    <a href="/{{ current_user.username }}"><img src="../static/images/touxiang/{{ current_user.username }}.jpg" class="img-circle" width="35" height="35"></a>
+                    <a href="/{{ current_user.username }}"><img src="../static/images/touxiang/{{ current_user.image }}" class="img-circle" width="35" height="35"></a>
                     <span>&nbsp;</span>
                     {% endif %}
                     <button class="menu-trigger pull-right">
@@ -197,13 +197,15 @@
             <aside class="col-sm-4 widget-author widget widget-with-posts post">
                 <div class="widget-author-inner row">
                     <div class="author-avatar1 row">
-                        <a href="/{{ article.user.username }}"><img src="../static/images/touxiang/{{ article.user.username }}.jpg" class="img-circle" width="100" height="100"></a>
+                        <a href="/{{ article.user.username }}"><img src="../static/images/touxiang/{{ article.user.image }}" class="img-circle" width="100" height="100"></a>
                     </div>
                     <a href="/{{ article.user.username }}">
                         <h2 class="author-name">{{ article.user.username }}</h2>
                     </a>
                     <h5 class="author-title">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</h5>
-                    <div><p style="text-align: center;"><span class="">{{ article.content }}</span></p></div>
+                    <div>
+                        <p style="text-align: center; width: 100%; word-wrap: break-word;" class="personal-font-p">{{ article.content }}</p>
+                    </div>
                     <footer class="row">
                         <a href="/content/{{ article.id }}" class="know-more1">评论</a>
                         <div class="response-count"><img src="../static/images/comment-icon-gray.png">{{ article.comments_number }}</div>

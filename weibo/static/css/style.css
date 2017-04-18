@@ -2742,3 +2742,8 @@ textarea.form-control {
     padding-right: 0;
   }
 }
+.myself {
+  text-align: center; 
+  width: 100%; 
+  word-wrap: break-word;
+}
