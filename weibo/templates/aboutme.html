@@ -168,7 +168,7 @@
 
     <section class="row page-content-wrap">
         <div class="container">
-            <h2 class="page-title text-center">about me</h2>
+            <h2 class="page-title text-center"><!-- about me -->&nbsp;</h2>
             <div class="row">
                 <div class="col-md-8 page-contents">
                     <div class="row page-content">
@@ -202,11 +202,13 @@
                     </aside>
                     <aside class="row m0 widget widget-twitter">
                         <div class="col-sm-12">
-                            <form method="POST" enctype="multipart/form-data" action="/upload/{{ current_user.username }}">
+                            <form method="POST" id="modify_" enctype="multipart/form-data" action="/upload/{{ current_user.username }}" style="display: none;">
                                 <input type=file name=file>
                                 <input type=submit value=上传>
                             </form>
-                            <!-- <button type="submit" class="btn-primary"><span>修改头像</span></button> -->
+                            <div class="text-center" id="modify">
+                                <button type="submit" class="btn-primary"><span>修改头像</span></button>
+                            </div>
                         </div>
                     </aside>
 
@@ -257,6 +259,15 @@
     <script src="../static/vendors/isotope/isotope.pkgd.min.js"></script>
     <script src="../static/js/theme.js"></script>
     {{ moment.include_moment() }}
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+        $("#modify").click(function(){
+            $("#modify_").slideToggle("fast");
+          });
+        });
+    </script>
+ 
+    <style type="text/css"></style>
 </body>
 
 </html>

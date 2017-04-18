@@ -172,14 +172,14 @@
 
     <section class="row content-wrap">
         <div class="container">
-        <h2 class="page-title text-center">Content</h2>
+        <h2 class="page-title text-center"><!-- Content -->&nbsp;</h2>
             <div class="row">
                 <div class="col-md-8 single-post-contents">
                     <article class="single-post-content row m0 post">
                         <header class="row">
                             <h5 class="post-meta">
                                 <a href="#" class="date" style="float: left;">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</a>
-                                <span class="post-author"><i>by</i><a href="#">{{ article.user.username }}</a></span>
+                                <span class="post-author"><i>by</i><a href="/{{ article.user.username }}">{{ article.user.username }}</a></span>
                             </h5>
                         </header>
                         <div class="post-content row">
@@ -238,7 +238,7 @@
                             </div>
                             <div class="col-sm-12">
                                 {% if current_user.is_authenticated %}
-                                {{ commentform.submit(class='btn-primary') }}
+                                {{ commentform.submit(class='btn-primary', style='color: gray') }}
                                 <!-- <button type="submit" class="btn-primary"><span>send</span></button> -->
                                 {% else %}
                                 <button type="submit" class="btn-primary" data-toggle="modal" href="javascript:void(0)" onclick="openLoginModal();"><span>请先登录</span></button>

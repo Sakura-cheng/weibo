@@ -171,7 +171,7 @@
 
     <section class="row content-wrap">
         <div class="container">
-            <h2 class="page-title text-center">Content</h2>
+            <h2 class="page-title text-center"><!-- Content -->&nbsp;</h2>
             <div class="row">
                 <div class="col-md-8 single-post-contents">
                     <ul class="nav nav-tabs" id="myDDD">
@@ -191,7 +191,7 @@
                                         <div style="width: 600px; word-wrap: break-word;">
                                             <h4><a href="#">{{ article.user.username }}</a></h4>
                                             <h5><a href="#" class="date">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</a> </h5>
-                                            <p>{{ article.content }}</p>
+                                            <a href="/content/{{ article.id }}"><p>{{ article.content }}</p></a>
                                         </div>
                                         </div>
                                     </div>
