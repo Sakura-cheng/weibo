@@ -177,18 +177,19 @@
                                 <h5 class="form-title">个人简介</h5>
                                 <div class="form-group col-sm-6">
                                     <label for="name">昵称*</label>
-                                    <input type="text" id="name" class="form-control" placeholder="Your name" required>
+                                    <input type="text" name="username" id="name" class="form-control" placeholder="Your name" required="required" value="{{ current_user.username }}">
                                 </div>
                                 <div class="form-group col-sm-6">
-                                    <label for="email">邮箱*</label>
-                                    <input type="email" id="email" class="form-control" placeholder="Your email address here" required>
+                                    <label for="email">邮箱</label>
+                                    <p>{{ current_user.email }}</p>
+                                    <!-- <input type="email" id="email" class="form-control" placeholder="Your email address here" required> -->
                                 </div>
                                 <div class="form-group col-sm-12">
                                     <label for="message">个性签名</label>
-                                    <textarea name="message" id="message" class="form-control" placeholder="Write message here"></textarea>
+                                    <textarea name="message" id="message" class="form-control" placeholder="Write message here">{{ current_user.content }}</textarea>
                                 </div>
                                 <div class="col-sm-12">
-                                    <button type="submit" class="btn-primary"><span>保存</span></button>
+                                    <button type="submit" class="btn-primary"><span>修改</span></button>
                                     <h5 class="pull-right">*必须填写</h5>
                                 </div>
                             </form>

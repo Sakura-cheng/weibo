@@ -183,7 +183,7 @@
                             </h5>
                         </header>
                         <div class="post-content row">
-                            <h3 style="width: 100%; word-wrap: break-word;">{{ article.content }}</h3>
+                            <p style="width: 100%; word-wrap: break-word;" class="personal-font-p">{{ article.content }}</p>
                             <!-- <br>
                             <h3>It has survived not only five centuries, but also the leap into electronic typesetting, remaining
                                 essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets
@@ -206,7 +206,7 @@
                                 <div class="media-body">
                                     <h4><a href="/{{ comment.user.username }}">{{ comment.user.username }}</a></h4>
                                     <h5><a href="#" class="date">{{ moment(comment.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</a></h5>
-                                    <p style="width: 100%; word-wrap: break-word;">{{ comment.content }}</p>
+                                    <p style="width: 100%; word-wrap: break-word;" class="personal-font-p">{{ comment.content }}</p>
                                 </div>
                             </div>
                             {% endfor %}
@@ -264,7 +264,7 @@
                                 微博：<span class="badge">{{ total }}</span>
                             </div>
                             <!-- <h5 class="author-title">small title</h5> -->
-                            <p>{{ article.user.contetn }}</p>
+                            <p class="text-center">{{ article.user.content }}</p>
                             <a href="/{{ article.user.username }}" class="know-more">know more</a>
                         </div>
                     </aside>

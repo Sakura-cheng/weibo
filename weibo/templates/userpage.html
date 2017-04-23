@@ -208,7 +208,7 @@
                                         <div class="media-body">
                                             <h4><a href="/{{ follower.follower.username }}">{{ follower.follower.username }}</a></h4>
                                             <h4>&nbsp;</h4>
-                                            <p>描述</p>
+                                            <p>{{ follower.follower.content }}</p>
                                         </div>
                                     </div>
                                 </article>
@@ -224,7 +224,7 @@
                                         <div class="media-body">
                                             <h4><a href="/{{ followed.followed.username }}">{{ followed.followed.username }}</a></h4>
                                             <h4>&nbsp;</h4>
-                                            <p>描述</p>
+                                            <p>{{ followed.followed.content }}</p>
                                         </div>
                                     </div>
                                 </article>
@@ -309,7 +309,7 @@
                                 微博：<span class="badge">{{ total }}</span>
                             </div>
                             <!-- <h5 class="author-title">small title</h5> -->
-                            <p>{{ user.contetn }}</p>
+                            <p class="text-center">{{ user.content }}</p>
                             <!-- <a href="#" class="know-more">know more</a> -->
                         </div>
                     </aside>

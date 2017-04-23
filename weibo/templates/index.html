@@ -204,7 +204,7 @@
                     </a>
                     <h5 class="author-title">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</h5>
                     <div>
-                        <p style="text-align: center; width: 100%; word-wrap: break-word;" class="personal-font-p">{{ article.content }}</p>
+                        <a href="/content/{{ article.id }}"><p style="text-align: center; width: 100%; word-wrap: break-word;" class="personal-font-p">{{ article.content }}</p></a>
                     </div>
                     <footer class="row">
                         <a href="/content/{{ article.id }}" class="know-more1">评论</a>

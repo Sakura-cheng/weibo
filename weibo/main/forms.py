@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-14 16:38:15
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-17 22:56:35
+# @Last Modified time: 2017-04-23 17:47:40
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import Required, Length, Email, EqualTo, Regexp
@@ -16,6 +16,11 @@ class PublishForm(Form):
 class CommentForm(Form):
 	content = TextAreaField('写评论：', validators=[Required()])
 	submit = SubmitField('评论')
+
+# class ModifyForm(Form):
+# 	username = StringField(validators=[Required(), Length(1, 64)])
+# 	content = TextAreaField()
+# 	submit = SubmitField('保存')
 
 class LoginForm(Form):
 	email = StringField('邮箱：', validators=[Required(), Length(1, 64), Email()])

@@ -2,13 +2,13 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:21:39
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-18 08:57:22
+# @Last Modified time: 2017-04-23 18:22:30
 import os
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash, jsonify, send_from_directory
 
 from . import main
-from .forms import PublishForm, LoginForm, RegisterForm, CommentForm
+from .forms import PublishForm, LoginForm, RegisterForm, CommentForm#, ModifyForm
 from .. import db, photos
 from ..models import User, Comment, Article, Follow
 from flask_login import login_required, login_user, logout_user, current_user
@@ -96,6 +96,15 @@ def content(article_id):
 def about(username):
 	loginform = LoginForm()
 	registerform = RegisterForm()
+	# modifyform = ModifyForm()
+	user = User.query.filter_by(username=username).first()
+	user_id = user.id
+	if request.method == 'POST':
+		username = request.form['username']
+		content = request.form['message']
+		db.session.execute("UPDATE users SET username = '%s' WHERE id = %d" % (username, user_id))
+		db.session.execute("UPDATE users SET content = '%s' WHERE id = %d" % (content, user_id))
+		return redirect(url_for('.about', username=username))
 	return render_template('aboutme.html', loginform=loginform, registerform=registerform)
 
 @main.route('/<username>', methods=['GET', 'POST'])
@@ -148,7 +157,12 @@ def upload_file(username):
 	if request.method == 'POST' and 'file' in request.files:
 		file = request.files['file']
 		if file:
-			filename = photos.save(file, name=username + '.jpg')
+			# image_path = '..\\static\\images\\touxiang\\' + username + '.jpg'
+			# print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
+			# if os.path.exists(image_path):
+			# 	print('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+			# 	os.unlink(image_path)
+			filename = photos.save(file, name=str(n) + '.jpg')
 			db.session.execute("UPDATE users SET image = '%s' WHERE id = %d" % (filename, n))
 			return redirect(url_for('.about', username=username))
 		else:
