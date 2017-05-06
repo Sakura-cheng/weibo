@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:21:39
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-23 18:22:30
+# @Last Modified time: 2017-05-07 00:39:26
 import os
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash, jsonify, send_from_directory
@@ -16,6 +16,7 @@ from werkzeug import secure_filename
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 path = './weibo/static/images/touxiang'
+sensitive_table = ['习近平', '毛泽东', '江泽民', '法轮功', '屌', '屄', '操你妈']
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -27,6 +28,10 @@ def index():
 	loginform = LoginForm()
 	registerform = RegisterForm()
 	if form.validate_on_submit():
+		for item in sensitive_table:
+			if item in form.content.data:
+				flash('铭感字符；' + item)
+				return redirect(url_for('.index'))
 		article = Article(
 			content=form.content.data, 
 			user=current_user._get_current_object()
