@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-14 16:38:15
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-23 17:47:40
+# @Last Modified time: 2017-05-07 19:58:54
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import Required, Length, Email, EqualTo, Regexp
@@ -10,7 +10,7 @@ from wtforms import ValidationError
 from ..models import User, Comment, Article, Follow
 
 class PublishForm(Form):
-	content = TextAreaField('说点什么吧：', validators=[Required(), Length(max=140, message=('微博内容不能超过140字'))])
+	content = TextAreaField('说点什么吧：', validators=[Required()])
 	submit = SubmitField('发表')
 
 class CommentForm(Form):

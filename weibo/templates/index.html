@@ -220,9 +220,9 @@
                         <div class="response-count"><img src="../static/images/comment-icon-gray.png">{{ article.comments_number }}</div>
                         {% if current_user.is_authenticated %}
                             {% if not current_user.is_like(current_user) %}
-                            <div class="response-count"><span style="display: none;" id="mark">点赞</span><span style="display: none;" id="like_url">{{ article.id }}</span><img src="../static/images/point.png" id="like" width="20" height="20"><span id="like_number">{{ article.like_number }}</span>&nbsp;</div>
+                            <div class="response-count"><span style="display: none;" id="mark">点赞</span><span style="display: none;" id="like_url">{{ article.id }}</span><img src="../static/images/point.png" id="like" width="20" height="20" data-anijs="if: click, do: rubberBand animated"><span id="like_number">{{ article.like_number }}</span>&nbsp;</div>
                             {% else %}
-                            <div class="response-count"><span style="display: none;" id="mark">取消点赞</span><span style="display: none;" id="like_url">{{ article.id }}</span><img src="../static/images/point2.png" id="like" width="20" height="20"><span id="like_number">{{ article.like_number }}</span>&nbsp;</div>
+                            <div class="response-count"><span style="display: none;" id="mark">取消点赞</span><span style="display: none;" id="like_url">{{ article.id }}</span><img src="../static/images/point2.png" id="like" width="20" height="20" data-anijs="if: click, do: rubberBand animated"><span id="like_number">{{ article.like_number }}</span>&nbsp;</div>
                             {% endif %}
                         {% else %}
                         <div class="response-count"><img src="../static/images/point.png" width="20" height="20"><span id="like_number">{{ article.like_number }}</span>&nbsp;</div>

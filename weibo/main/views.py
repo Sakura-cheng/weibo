@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:21:39
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-05-07 14:13:48
+# @Last Modified time: 2017-05-07 19:59:42
 import os
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash, jsonify, send_from_directory
@@ -29,16 +29,19 @@ def index():
 	loginform = LoginForm()
 	registerform = RegisterForm()
 	if form.validate_on_submit():
-		for item in sensitive_table:
-			if item in form.content.data:
-				flash('铭感字符；' + item)
-				return redirect(url_for('.index'))
-		article = Article(
-			content=form.content.data, 
-			user=current_user._get_current_object()
-			)
-		db.session.add(article)
-		return redirect(url_for('.index'))
+		if len(form.content.data) <= 140:
+			for item in sensitive_table:
+				if item in form.content.data:
+					flash('敏感字符；' + item)
+					return redirect(url_for('.index'))
+			article = Article(
+				content=form.content.data, 
+				user=current_user._get_current_object()
+				)
+			db.session.add(article)
+			return redirect(url_for('.index'))
+		else:
+			flash('微博内容不能超过140字')
 	return render_template('index.html', current_time=datetime.utcnow(), form=form, loginform=loginform, registerform=registerform, articles=articles)
 
 @main.route('/login', methods=['GET', 'POST'])
