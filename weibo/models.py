@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-14 16:35:16
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-04-18 08:42:46
+# @Last Modified time: 2017-05-07 12:32:05
 from . import db
 from flask_login import UserMixin
 from . import login_manager
@@ -26,6 +26,7 @@ class User(UserMixin, db.Model):
 	content = db.Column(db.String(200), default='这个人很懒，什么也没说')
 	articles = db.relationship('Article', backref='user')
 	comments = db.relationship('Comment', backref='user')
+	like = db.relationship('Like', backref='user', lazy='dynamic')
 	followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], backref=db.backref('followed', lazy='joined'), lazy='dynamic', cascade='all, delete-orphan')
 	followeds = db.relationship('Follow', foreign_keys=[Follow.follower_id], backref=db.backref('follower', lazy='joined'), lazy='dynamic', cascade='all, delete-orphan')
 
@@ -43,6 +44,9 @@ class User(UserMixin, db.Model):
 
 	def is_followed_by(sefl, user):
 		return self.followers.filter_by(follower_id=user.id).first() is not None
+
+	def is_like(self, user):
+		return self.like.filter_by(user_id=user.id).first() is not None
 
 	@property
 	def password(self):
@@ -63,6 +67,16 @@ class Article(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	comments = db.relationship('Comment', backref='article')
 	comments_number = db.Column(db.Integer, default=0)
+	like = db.relationship('Like', backref='article') 
+	like_number = db.Column(db.Integer, default=0)
+
+class Like(db.Model):
+	__tablename__ = 'likes'
+	id = db.Column(db.Integer, primary_key=True)
+	content = db.Column(db.Integer, default=0)
+	timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
 
 class Comment(db.Model):
 	__tablename__ = 'comments'

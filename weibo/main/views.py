@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:21:39
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-05-07 00:39:26
+# @Last Modified time: 2017-05-07 14:13:48
 import os
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash, jsonify, send_from_directory
@@ -10,7 +10,7 @@ from flask import render_template, session, redirect, url_for, request, flash, j
 from . import main
 from .forms import PublishForm, LoginForm, RegisterForm, CommentForm#, ModifyForm
 from .. import db, photos
-from ..models import User, Comment, Article, Follow
+from ..models import User, Comment, Article, Follow, Like
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug import secure_filename
 
@@ -24,6 +24,7 @@ def allowed_file(filename):
 @main.route('/', methods=['GET', 'POST'])
 def index():
 	articles = Article.query.order_by(Article.timestamp.desc()).all()
+	who = current_user._get_current_object()
 	form = PublishForm()
 	loginform = LoginForm()
 	registerform = RegisterForm()
@@ -123,6 +124,31 @@ def usercenter(username, x=0):
 	total = Article.query.filter_by(user_id=user.id).count()
 	return render_template('userpage.html', articles=articles, total=total, user=user, loginform=loginform, registerform=registerform, func = x)
 
+@main.route('/like/<article_id>', methods=['GET', 'POST'])
+@login_required
+def like(article_id):
+	article = Article.query.filter_by(id=article_id).first()
+	n = article.id
+	like = Like(
+		content = 1, 
+		user=current_user._get_current_object(), 
+		article_id=n
+		)
+	db.session.add(like)
+	db.session.execute("UPDATE articles SET like_number = like_number + 1 WHERE id = %d" % n)
+	return jsonify(result=article.like_number+1)
+
+@main.route('/unlike/<article_id>', methods=['GET', 'POST'])
+@login_required
+def unlike(article_id):
+	article = Article.query.filter_by(id=article_id).first()
+	n = article.id
+	like = Like.query.filter_by(article_id=n).first()
+	m = like.id
+	db.session.execute('DELETE FROM likes WHERE id = %d' % m)
+	db.session.execute("UPDATE articles SET like_number = like_number - 1 WHERE id = %d" % n)
+	return jsonify(result=article.like_number-1)
+
 @main.route('/follow/<username>', methods=['GET', 'POST'])
 @login_required
 def follow_from_index(username):
@@ -134,7 +160,7 @@ def follow_from_index(username):
 	#	flash('你已经关注Ta了')
 	#	return redirect(url_for('.index'))
 	current_user.follow(user)
-	flash('你现在已关注Ta了')
+	#flash('你现在已关注Ta了')
 	return jsonify(result='取关')
 
 @main.route('/unfollow/<username>', methods=['GET', 'POST'])
@@ -145,7 +171,7 @@ def unfollow_from_index(username):
 		flash('用户不存在')
 		return redirect(url_for('.index'))
 	current_user.unfollow(user)
-	flash('你现在已取关Ta了')
+	#flash('你现在已取关Ta了')
 	return jsonify(result='关注')
 
 @main.route('/upload_file/<filename>')

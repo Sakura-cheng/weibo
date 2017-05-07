@@ -212,85 +212,25 @@
                     </a>
                     <h5 class="author-title">{{ moment(article.timestamp).format('HH:mm:ss YYYY/MM/DD') }}</h5>
                     <div>
-                        <a href="/content/{{ article.id }}"><p style="text-align: center; width: 100%; word-wrap: break-word;" class="personal-font-p">{{ article.content }}</p></a>
+                        <a href="/content/{{ article.id }}"><p style="text-align: center; width: 100%; word-wrap: break-word;" ><span class="personal-font-p">{{ article.content }}</span></p></a>
                     </div>
                     <footer class="row">
                         <a href="/content/{{ article.id }}" class="know-more1">评论</a>
+
                         <div class="response-count"><img src="../static/images/comment-icon-gray.png">{{ article.comments_number }}</div>
+                        {% if current_user.is_authenticated %}
+                            {% if not current_user.is_like(current_user) %}
+                            <div class="response-count"><span style="display: none;" id="mark">点赞</span><span style="display: none;" id="like_url">{{ article.id }}</span><img src="../static/images/point.png" id="like" width="20" height="20"><span id="like_number">{{ article.like_number }}</span>&nbsp;</div>
+                            {% else %}
+                            <div class="response-count"><span style="display: none;" id="mark">取消点赞</span><span style="display: none;" id="like_url">{{ article.id }}</span><img src="../static/images/point2.png" id="like" width="20" height="20"><span id="like_number">{{ article.like_number }}</span>&nbsp;</div>
+                            {% endif %}
+                        {% else %}
+                        <div class="response-count"><img src="../static/images/point.png" width="20" height="20"><span id="like_number">{{ article.like_number }}</span>&nbsp;</div>
+                        {% endif %}
                     </footer>
                 </div>
             </aside>
             {% endfor %}
-                <!-- <aside class="col-sm-4 widget-author widget widget-with-posts post">
-                    <div class="widget-author-inner row">
-                        <div class="author-avatar1 row">
-                            <a href="#">
-                                <img src="../static/images/author.png" alt="" class="img-circle"></a>
-                        </div>
-                        <a href="#">
-                            <h2 class="author-name">_@-@_傻逼智障爸爸</h2>
-                        </a>
-                        <h5 class="author-title">feb 17, 2016</h5>
-                        <p><span class="personal-font-p">哈哈哈哈哈！</span></p>
-                        <footer class="row">
-                            <a href="#" class="know-more1">know more</a>
-                            <div class="response-count"><img src="../static/images/comment-icon-gray.png" alt="">5</div>
-                        </footer>
-                    </div>
-                </aside>
-                <aside class="col-sm-4 widget-author widget widget-with-posts post">
-                    <div class="widget-author-inner row">
-                        <div class="author-avatar1 row">
-                            <a href="#">
-                                <img src="../static/images/posts/gallery/1.jpg" alt="" class="img-circle" width="108" height="108"></a>
-                        </div>
-                        <a href="#">
-                            <h2 class="author-name">張磊要</h2>
-                        </a>
-                        <h5 class="author-title">feb 17, 2016</h5>
-                        <p><span class="personal-font-p">The word nature is derived from the Latin word natura, or "essential qualities, innate disposition",
-                            and in ancient times, literally meant "birth".</span></p>
-                        <footer class="row">
-                            <a href="#" class="know-more1">know more</a>
-                            <div class="response-count"><img src="../static/images/comment-icon-gray.png" alt="">5</div>
-                        </footer>
-                    </div>
-                </aside>
-                <aside class="col-sm-4 widget-author widget widget-with-posts post">
-                    <div class="widget-author-inner row">
-                        <div class="author-avatar1 row">
-                            <a href="#">
-                                <img src="../static/images/posts/gallery/2.jpg" alt="" class="img-circle" width="108" height="108"></a>
-                        </div>
-                        <a href="#">
-                            <h2 class="author-name">_@-@_</h2>
-                        </a>
-                        <h5 class="author-title">feb 17, 2016</h5>
-                        <p><span class="personal-font-p">The word nature is derived from the Latin word natura, or "essential qualities, innate disposition",</span></p>
-                        <footer class="row">
-                            <a href="#" class="know-more1">know more</a>
-                            <div class="response-count"><img src="../static/images/comment-icon-gray.png" alt="">5</div>
-                        </footer>
-                    </div>
-                </aside>
-                <aside class="col-sm-4 widget-author widget widget-with-posts post">
-                    <div class="widget-author-inner row">
-                        <div class="author-avatar1 row">
-                            <a href="#">
-                                <img src="../static/images/posts/gallery/3.jpg" alt="" class="img-circle" width="108" height="108"></a>
-                        </div>
-                        <a href="#">
-                            <h2 class="author-name">_@-@_傻逼智障爸爸</h2>
-                        </a>
-                        <h5 class="author-title">feb 17, 2016</h5>
-                        <p><span class="personal-font-p">The word nature is derived from the Latin word natura, or "essential qualities, innate disposition",
-                            and in ancient times, literally meant "birth".</span></p>
-                        <footer class="row">
-                            <a href="#" class="know-more1">know more</a>
-                            <div class="response-count"><img src="../static/images/comment-icon-gray.png" alt="">5</div>
-                        </footer>
-                    </div>
-                </aside> -->
 
             </div>
         </div>
@@ -343,6 +283,35 @@
     
     <!-- Include to use $addClass, $toggleClass or $removeClass -->
     <script src="http://anijs.github.io/lib/anijs/helpers/dom/anijs-helper-dom-min.js"></script>
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    <script type="text/javascript">
+        $(function() {
+            $('#like').bind('click', function() {
+                var mark = $('#mark').text();
+                if (mark == '点赞'){
+                    var url = $('#like_url').text();
+                    $.getJSON($SCRIPT_ROOT + '/like/' + url, 
+                        function(data) {
+                            $('#mark').text('取消点赞');
+                            $('#like_number').text(data.result);
+                            $('#like').attr('src', '../static/images/point2.png');
+                    });
+                }
+                else{
+                    var url = $('#like_url').text();
+                    $.getJSON($SCRIPT_ROOT + '/unlike/' + url, 
+                        function(data) {
+                            $('#mark').text('点赞');
+                            $('#like_number').text(data.result);
+                            $('#like').attr('src', '../static/images/point.png');
+                    });
+                    }
+                return false;
+            });
+        });
+    </script>
     {{ moment.include_moment() }}
 </body>
 
