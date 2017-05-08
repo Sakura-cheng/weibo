@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-11 18:21:39
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-05-07 19:59:42
+# @Last Modified time: 2017-05-08 20:07:53
 import os
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash, jsonify, send_from_directory
@@ -24,6 +24,9 @@ def allowed_file(filename):
 @main.route('/', methods=['GET', 'POST'])
 def index():
 	articles = Article.query.order_by(Article.timestamp.desc()).all()
+	n = 0
+	for article in articles:
+		n = n + 1
 	who = current_user._get_current_object()
 	form = PublishForm()
 	loginform = LoginForm()
@@ -42,7 +45,7 @@ def index():
 			return redirect(url_for('.index'))
 		else:
 			flash('微博内容不能超过140字')
-	return render_template('index.html', current_time=datetime.utcnow(), form=form, loginform=loginform, registerform=registerform, articles=articles)
+	return render_template('index.html', current_time=datetime.utcnow(), form=form, loginform=loginform, registerform=registerform, articles=articles, n=n)
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
@@ -96,6 +99,7 @@ def content(article_id):
 			)
 		db.session.add(comment)
 		db.session.execute('UPDATE articles SET comments_number = comments_number + 1 WHERE id = %d' % n)
+		return redirect(url_for('.content', article_id=n))
 	comments =Comment.query.filter_by(article_id=article_id)
 	total = Article.query.filter_by(user_id=article.user.id).count()
 	return render_template('content.html', article=article, total=total, comments=comments, loginform=loginform, registerform=registerform, commentform=commentform)
@@ -145,8 +149,10 @@ def like(article_id):
 @login_required
 def unlike(article_id):
 	article = Article.query.filter_by(id=article_id).first()
+	user = current_user._get_current_object()
 	n = article.id
-	like = Like.query.filter_by(article_id=n).first()
+	m = user.id
+	like = Like.query.filter_by(article_id=n, user_id=m).first()
 	m = like.id
 	db.session.execute('DELETE FROM likes WHERE id = %d' % m)
 	db.session.execute("UPDATE articles SET like_number = like_number - 1 WHERE id = %d" % n)

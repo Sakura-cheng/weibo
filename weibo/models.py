@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2017-03-14 16:35:16
 # @Last Modified by:   wsljc
-# @Last Modified time: 2017-05-07 12:32:05
+# @Last Modified time: 2017-05-08 14:56:10
 from . import db
 from flask_login import UserMixin
 from . import login_manager
@@ -45,8 +45,8 @@ class User(UserMixin, db.Model):
 	def is_followed_by(sefl, user):
 		return self.followers.filter_by(follower_id=user.id).first() is not None
 
-	def is_like(self, user):
-		return self.like.filter_by(user_id=user.id).first() is not None
+	def is_like(self, user, article):
+		return self.like.filter_by(user_id=user.id, article_id=article).first() is not None
 
 	@property
 	def password(self):
